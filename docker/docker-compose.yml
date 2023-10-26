@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  api:
+    build: .
+    command: npm run start:api
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: development
+      MONGO_URI: mongodb://mongo:27017/my-library
+    depends_on:
+      - mongo
+    networks:
+      - my-library-network
+
+  auth:
+    build: .
+    command: npm run start:auth
+    ports:
+      - '3001:3001'
+    environment:
+      NODE_ENV: development
+      MONGO_URI: mongodb://mongo:27017/my-library
+    depends_on:
+      - mongo
+    networks:
+      - my-library-network
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - my-library-network
+
+volumes:
+  mongo-data:
+
+networks:
+  my-library-network:
